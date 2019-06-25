@@ -11,7 +11,7 @@ int check(string input)
 {
 	for (int i = 0; i < input.length(); i++)
 	{
-		if (!(input[i] >= 48 && input[i] <= 57) && input[i] != '['&&input[i] != ';'&&input[i] != ' '&&input[i] != ']'&&input[i] != '.'&&input[i] != '-')
+		if (!(input[i] >= 48 && input[i] <= 57) && input[i] != '[' && input[i] != ';' && input[i] != ' ' && input[i] != ']' && input[i] != '.' && input[i] != '-')
 		{
 			cout << "ERROR";
 			return 0;
@@ -22,7 +22,7 @@ int check(string input)
 }
 
 //parcing & converting function
-vector <vector< float> > parcing(string input1, float &rows1, float &columns1 ,int &flagsize )
+vector <vector< float> > parcing(string input1, float& rows1, float& columns1, int& flagsize)
 {
 	//initilizing variables of mat1
 	vector <vector <float> > mat1;
@@ -121,7 +121,7 @@ void matprint(vector<vector<float> > mat)
 }
 
 //summation function
-vector <vector< float> > sum(vector<vector<float> > &mat1, vector<vector<float> > &mat2)
+vector <vector< float> > sum(vector<vector<float> >& mat1, vector<vector<float> >& mat2)
 {
 	//initializing returning vector
 	vector<vector<float> > matsum;
@@ -139,7 +139,7 @@ vector <vector< float> > sum(vector<vector<float> > &mat1, vector<vector<float> 
 }
 
 //difference function
-vector <vector< float> > diff(vector<vector<float> > &mat1, vector<vector<float> > &mat2)
+vector <vector< float> > diff(vector<vector<float> >& mat1, vector<vector<float> >& mat2)
 {
 	//initializing returning vector
 	vector <vector< float> > matdiff;
@@ -191,7 +191,7 @@ vector<vector<float> > mult(vector<vector<float> > mat1, vector<vector<float> > 
 }
 
 //power function
-vector <vector< float> > power(vector <vector< float> > &mat1, int p)
+vector <vector< float> > power(vector <vector< float> >& mat1, int p)
 {
 	vector <vector< float> > matpow;
 	matpow = mat1;
@@ -203,10 +203,10 @@ vector <vector< float> > power(vector <vector< float> > &mat1, int p)
 }
 
 //transpose function
-vector <vector< float> > transpose(vector <vector< float> > &mat1 , float &rows1, float &columns1)
+vector <vector< float> > transpose(vector <vector< float> >& mat1, float& rows1, float& columns1)
 {
 	vector <vector< float> > mattransp;
-	
+
 	//filling mattransp
 	for (int i1 = 0; i1 < columns1; i1++)
 	{
@@ -220,8 +220,8 @@ vector <vector< float> > transpose(vector <vector< float> > &mat1 , float &rows1
 	{
 		for (int j1 = 0; j1 < rows1; j1++)
 		{
-			
-				mattransp[i1][j1]=mat1[j1][i1];
+
+			mattransp[i1][j1] = mat1[j1][i1];
 		}
 	}
 
@@ -229,21 +229,73 @@ vector <vector< float> > transpose(vector <vector< float> > &mat1 , float &rows1
 }
 
 //determinant function
-float determinant(vector <vector< float> > mat1 , float rows1 ,float columns1)
+float determinant(vector <vector< float> > mat1, float rows1, float columns1)
 {
 	float determ1 = 1;
+	//check that the main diagonal does not contain zero
+	for (int s = 0; s < rows1; s++)
+	{
+		//swapping the row which contain zero
+		if (mat1[s][s] == 0)
+		{
+			determ1 *= -1;
+			vector <float> swapmat;
+			for (int i = 0; i < columns1; i++)
+			{
+				swapmat.push_back(mat1[s][i]);
+			}
+				//check if it is the last row or not to avoid assertion failed
+				if (s != columns1 - 1)
+				{
+					for(int j=s+1 ;j<rows1;j++)
+					{
+						if (mat1[j][s] != 0)
+						{
+							for (int i = 0; i < columns1; i++)
+							{
+								mat1[s][i] = mat1[j][i];
+								mat1[j][i] = swapmat[i];
+							}
+							break;
+						}
+					}
+				}
+				else
+				{
+					for (int j = 0; j < rows1-1; j++)
+					{
+						if (mat1[j][s] != 0)
+						{
+							for (int i = 0; i < columns1; i++)
+							{
+								mat1[s][i] = mat1[j][i];
+								mat1[j][i] = swapmat[i];
+							}
+						}
+						break;
+					}
+				}
+		}
+	}
 	//iterrations on columns to make triangular matrix
 	for (int j = 0; j < (columns1 - 1); j++)
 	{
 		//iterations on rows to make triangular matrix
 		for (int i = j + 1; i < rows1; i++)
 		{
+
+			if (mat1[i][j] == 0)
+			{
+				continue;
+			}
 			//get the number which will be multiplyed with the row
-			float multnum = mat1[i][j] / mat1[j][j];
+			float multnum1 = mat1[i][j]/mat1[j][j];
+			
 			//itteration to fill the new row with zero
 			for (int c = 0; c < columns1; c++)
 			{
-				mat1[i][c] = mat1[i][c] - (multnum*mat1[j][c]);
+				float z = ( mat1[i][c]) - (multnum1 * mat1[j][c]);
+				mat1[i][c] = z;
 			}
 		}
 	}
@@ -259,6 +311,11 @@ float determinant(vector <vector< float> > mat1 , float rows1 ,float columns1)
 //inverse function
 vector <vector< float> > matinverse(vector <vector< float> > mat1, float rows1, float columns1)
 {
+	if (determinant(mat1, rows1, columns1) == 0)
+	{
+		cout << "ERROR";
+		exit(1);
+	}
 	float invdetermofmat1 = 1 / determinant(mat1, rows1, columns1);
 
 	//adjoint matrix
@@ -291,7 +348,7 @@ vector <vector< float> > matinverse(vector <vector< float> > mat1, float rows1, 
 				}
 			}
 			//calculating elements of adjointmat
-			adjelement = (pow(-1, (i + 1) + (j + 1)))*determinant(matc, (rows1 - 1), (columns1 - 1));
+			adjelement = (pow(-1, (i + 1) + (j + 1))) * determinant(matc, (rows1 - 1), (columns1 - 1));
 			adjointmat[i].push_back(adjelement);
 		}
 	}
@@ -307,7 +364,7 @@ vector <vector< float> > matinverse(vector <vector< float> > mat1, float rows1, 
 		matinver.push_back(vector <float>());
 		for (int j = 0; j < columns1; j++)
 		{
-			matinver[i].push_back(invdetermofmat1*transposeadjointmat[i][j]);
+			matinver[i].push_back(invdetermofmat1 * transposeadjointmat[i][j]);
 		}
 	}
 
@@ -315,7 +372,7 @@ vector <vector< float> > matinverse(vector <vector< float> > mat1, float rows1, 
 }
 
 //division function
-vector <vector< float> > division(vector<vector<float> > mat1, vector<vector<float> > mat2 ,float rows2 ,float columns2)
+vector <vector< float> > division(vector<vector<float> > mat1, vector<vector<float> > mat2, float rows2, float columns2)
 {
 	vector <vector< float> >matdivision;
 	vector <vector< float> >mat2inv;
@@ -362,14 +419,14 @@ int main()
 		cout << "ERROR";
 		return 0;
 	}
-	for (int s = 1; s <= mat1.size()-1; s++)
+	for (int s = 1; s <= mat1.size() - 1; s++)
 	{
-		if(mat1[s].size()!=mat1[s-1].size())
+		if (mat1[s].size() != mat1[s - 1].size())
 		{
 			cout << "ERROR";
 		}
 	}
-	
+
 
 	if (operat == '+' || operat == '-' || operat == '*' || operat == '/')
 	{
@@ -385,7 +442,7 @@ int main()
 
 
 		//using parcing function
-		mat2 = parcing(input2, rows2, columns2,flagsize2);
+		mat2 = parcing(input2, rows2, columns2, flagsize2);
 
 		/*if (rows1 != rows2 || columns1 != columns2||flagsize2==1)
 		{
@@ -505,7 +562,7 @@ int main()
 		}
 		break;
 	}
-	case 'T' :
+	case 'T':
 	{
 		vector <vector< float> >mattransp;
 
@@ -516,7 +573,7 @@ int main()
 		matprint(mattransp);
 		break;
 	}
-	case 'D' :
+	case 'D':
 	{
 		//condition for square matrix
 		if (rows1 != columns1)
@@ -526,12 +583,12 @@ int main()
 		}
 		else
 		{
-			determ1 = determinant(mat1 ,rows1 ,columns1);
+			determ1 = determinant(mat1, rows1, columns1);
 			cout << determ1;
 		}
 		break;
 	}
-	case 'I' :
+	case 'I':
 	{
 		//condition for square matrix
 		if (rows1 != columns1)
@@ -552,9 +609,9 @@ int main()
 		}
 		break;
 	}
-	case '/' :
+	case '/':
 	{
-		if ( rows2 != columns1)
+		if (rows2 != columns1)
 		{
 			cout << "ERROR";
 			return 0;
