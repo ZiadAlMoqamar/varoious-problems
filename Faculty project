@@ -240,6 +240,7 @@ float determinant(vector <vector< float> > mat1, float rows1, float columns1)
 		{
 			determ1 *= -1;
 			vector <float> swapmat;
+			//saving row in another vector
 			for (int i = 0; i < columns1; i++)
 			{
 				swapmat.push_back(mat1[s][i]);
@@ -249,8 +250,10 @@ float determinant(vector <vector< float> > mat1, float rows1, float columns1)
 				{
 					for(int j=s+1 ;j<rows1;j++)
 					{
+						//check that the other row does not contain zero in the main diagonal
 						if (mat1[j][s] != 0)
 						{
+							//loop to swap the rows
 							for (int i = 0; i < columns1; i++)
 							{
 								mat1[s][i] = mat1[j][i];
@@ -260,6 +263,7 @@ float determinant(vector <vector< float> > mat1, float rows1, float columns1)
 						}
 					}
 				}
+				//condition for the row if it was the last in the matrix
 				else
 				{
 					for (int j = 0; j < rows1-1; j++)
@@ -277,10 +281,10 @@ float determinant(vector <vector< float> > mat1, float rows1, float columns1)
 				}
 		}
 	}
-	//iterrations on columns to make triangular matrix
+	//iterrations on columns to make lower triangular matrix
 	for (int j = 0; j < (columns1 - 1); j++)
 	{
-		//iterations on rows to make triangular matrix
+		//iterations on rows to make lower triangular matrix
 		for (int i = j + 1; i < rows1; i++)
 		{
 
